@@ -21,13 +21,12 @@ che genera la seguente animazione:
 <p align="center">
   <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Images/gasLattice_barr.gif">
 </p>
-Nel sencondo caso utilizziamo invece LatticeGasSimPcb e animation1 in tal modo:
 
+Nel sencondo caso utilizziamo invece LatticeGasSimPcb e animation1 in tal modo:
 ```sh
 lgs = LatticeGasSimPcb(30,4)
 lgs.animation1(frames=100,dpf=1,fps=4,filename="gasLatticePCB1.1")
 ```
-
 per ottenere:
 <p align="center">
   <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Images/gasLatticePCB1.1.gif">
