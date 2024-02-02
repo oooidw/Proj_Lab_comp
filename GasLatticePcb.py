@@ -1,5 +1,4 @@
-from Modules.LatticeGasSimPcb import LatticeGasSimPcb
-import matplotlib.pyplot as plt
+from Modules.LatticeGasSim import LatticeGasSimPcb
 import os
 os.system('clear')
 
