@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.animation as animation
 from hexalattice.hexalattice import *
-import time
 from Modules.modGaphics import *
 from Modules.modulogl import modulogl as gl
 from tqdm import tqdm, trange
@@ -116,11 +115,11 @@ class LatticeGasSimPcb:
         ani = animation.FuncAnimation(figure, func = update, frames = frames)
         
         if format == "gif":
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=fps)
+            ani.save(filename="Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=fps)
         elif format == "mp4":
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=20, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".mp4", writer=writer)
+            ani.save(filename="Images/"+filename+".mp4", writer=writer)
 
 
     def animation2(self,frames,dpf=30,dpi=200,filename="Sim",format="gif",ave_size=10,scale=5):
@@ -168,8 +167,8 @@ class LatticeGasSimPcb:
 
         # Salvataggio
         if format == "gif":
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
+            ani.save(filename="../Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
         elif format == "mp4":
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".mp4", writer=writer)
+            ani.save(filename="../Images/"+filename+".mp4", writer=writer)

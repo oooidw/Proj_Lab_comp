@@ -157,11 +157,11 @@ class LatticeGasSim:
         ani = animation.FuncAnimation(figure, func = update, frames = frames)
         
         if format == "gif":
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=10)
+            ani.save(filename="../Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=10)
         elif format == "mp4":
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=20, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".mp4", writer=writer)
+            ani.save(filename="../Images/"+filename+".mp4", writer=writer)
 
 
     """
@@ -233,9 +233,9 @@ class LatticeGasSim:
 
         # Salvataggio
         if format == "gif":
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
+            ani.save(filename="../Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
         elif format == "mp4":
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="/root/MyCode/Lab_Comp/Proj/Images/"+filename+".mp4", writer=writer)
+            ani.save(filename="../Images/"+filename+".mp4", writer=writer)
 
