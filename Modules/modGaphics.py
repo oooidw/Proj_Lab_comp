@@ -89,8 +89,6 @@ def make_grid(nx, ny, min_diam, n, crop_circ, rotate_deg, align_to_origin) -> (n
 
 	return coord_x, coord_y
 
-
-
 if __name__ == "__main__":
 
 	# Parameters

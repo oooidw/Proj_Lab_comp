@@ -21,7 +21,7 @@ class LatticeGasSim:
     seed : seed per la generazione di numeri casuali
     obs_type : tipo di ostacolo desiderato
     """
-    def __init__(self,Lx,Ly,rho,flowRate=1,scale=4,seed=12345678,obs_type="barrier"):
+    def __init__(self,Lx,Ly,rho=0.2,flowRate=0.2,scale=4,seed=12345678,obs_type="barrier"):
         # Abbreviazioni per le direzioni
         self.RI = 1      
         self.RD = 2
