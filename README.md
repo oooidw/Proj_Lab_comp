@@ -44,3 +44,23 @@ lgs = LatticeGasSimPcb(
       obs_type   = "barrier"         # tipo di ostacolo desiderato (barriera, quadrato o rombo)
 )
 ```
+```sh
+lgs.animation1(
+      frames                         # il numero di frame da disegnare
+      dpf        = 30                # il numero di step della simulazione per ogni frame
+      dpi        = 200               # dpi dell'immagine se si sceglie il formato gif
+      filename   = "Sim"             # nome del file di output dell'animazione
+      formato    = "gif"             # formato del file di output (gif o mp4)
+)
+```
+```sh
+lgs.animation1(
+      frames                         # il numero di frame da disegnare
+      dpf        = 30                # il numero di step della simulazione per ogni frame
+      dpi        = 200               # dpi dell'immagine se si sceglie il formato gif
+      filename   = "Sim"             # nome del file di output dell'animazione
+      formato    = "gif"             # formato del file di output (gif o mp4)
+      ave_size   = 10                # dimensioni del quadrato per coarse grained average
+      scale      = 5                 # parametro per regolare le dimensioni dei vettori
+)
+```
