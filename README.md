@@ -31,3 +31,16 @@ per ottenere:
 <p align="center">
   <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Images/gasLatticePCB1.1.gif">
 </p>
+
+## Parametri aggiuntivi
+```sh
+lgs = LatticeGasSimPcb(
+      Lx                             # Dimensione x del reticolo
+      Lx                             # Dimensione y del reticolo
+      rho        = 0.2               # Densità di particelle
+      flowrate   = 0.2               # Valore desiderato del flusso di particelle
+      scale      = 4                 # Parametro che influenza il numero di inezioni per ottenere un certo flowrate
+      seed       = 12345678          # seed per la generazione di numeri casuali
+      obs_type   = "barrier"         # tipo di ostacolo desiderato (barriera, quadrato o rombo)
+)
+```
