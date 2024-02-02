@@ -33,6 +33,7 @@ per ottenere:
 </p>
 
 ## Parametri aggiuntivi
+Per le differenti simulazioni:
 ```sh
 lgs = LatticeGasSim(
       Lx                             # Dimensione x del reticolo
@@ -51,6 +52,7 @@ lgs = LatticeGasSimPcb(
       seed       = 12345678          # seed per la generazione di numeri casuali
 )
 ```
+Per le animazioni:
 ```sh
 lgs.animation1(
       frames                         # il numero di frame da disegnare
