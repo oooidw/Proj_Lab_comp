@@ -233,11 +233,11 @@ class LatticeGasSim:
 
         # Salvataggio
         if format == "gif":
-            ani.save(filename="../Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
+            ani.save(filename="Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
         elif format == "mp4":
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="../Images/"+filename+".mp4", writer=writer)
+            ani.save(filename="Images/"+filename+".mp4", writer=writer)
 
 
 
