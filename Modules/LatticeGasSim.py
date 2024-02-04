@@ -51,7 +51,7 @@ class LatticeGasSim:
         self.newLattice = np.zeros((self.Ly,self.Lx),dtype=np.uint8)
         self.histLattice = np.zeros((self.Ly,self.Lx),dtype=np.uint8)
         
-        # Barriere
+        # Barriere sopra e sotto
         self.lattice[1,:] = self.B
         self.lattice[self.Ly-2,:] = self.B
         
@@ -82,17 +82,6 @@ class LatticeGasSim:
             self.propy1, self.propy2 =  int(self.Lx*0.3),int(self.Lx*0.4)             # |
             self.lattice[self.propx1:self.propx2,self.propy1:self.propy2] = self.B
 
-        self.vxTotal = []
-
-    """
-    Tramite la funzione count_lattice() genera un array per colorare il reticolo, barr è il colore della barriera 
-    e parr quello delle particelle, entrambi in formato RGB.
-    """
-    def draw_colors(self):
-        barr = np.array([1.,0.,0.])
-        parr = np.array([0.,0.,1.])
-        return gl.count_lattice(barr,parr,self.lattice)
-
 
     """
     Funzione chiamata per progredire con la simulazione.
@@ -102,66 +91,6 @@ class LatticeGasSim:
     def simulation(self,n):
         for i in range(n):
             self.lattice = gl.update_lattice(self.lattice).astype(dtype=np.uint8,order='F')
-
-
-    """
-    Funzione che genera un'animazione della simulazione. Si visualizza l'intero reticolo e tutte le particelle al suo interno.
-    Un colore più intenso significa più particelle in quel sito del reticolo.
-
-    frames : il numero di frame da disegnare
-    dpf : il numero di step della simulazione per ogni frame
-    dpi : dpi dell'immagine se si sceglie il formato gif
-    filename : nome del file di output dell'animazione
-    formato : formato del file di output (gif o mp4)
-    """
-    def animation1(self,frames,dpf=30,dpi=200,filename="Sim",format="gif"):
-        def update(frame): 
-            colors = self.draw_colors() 
-            self.simulation(dpf)
-
-            p_bar.update()
-            if frame==frames-1:
-                tqdm.close(p_bar)
-                print("Salvataggio...")                
-            return collection.set_facecolors(colors)
-
-        # Parameters
-        x_dim = self.Lx
-        y_dim = self.Ly
-        diam = 1
-
-        
-        # Generazione dell'animazione
-        figure, axs = plt.subplots()
-        #figure.set_size_inches(12, 12)
-        
-        # Generazione degli esagoni
-        print("Creazione lattice...")        
-        centers, _ = create_hex_grid(nx = x_dim, ny = y_dim, min_diam = diam,align_to_origin=False)
-        
-        polygons = [mpatches.RegularPolygon((x, y), numVertices = 6, radius = diam / np.sqrt(3)) for x, y in zip(centers[:, 0], centers[:, 1])]
-        collection = PatchCollection(polygons)
-        axs.add_collection(collection)
-
-        axs.set_aspect('equal')
-        axs.axis([
-            centers[:, 0].min() - 2 * diam,
-            centers[:, 0].max() + 2 * diam,
-            centers[:, 1].min() - 2 * diam,
-            centers[:, 1].max() + 2 * diam,
-        ])
-
-        # Animate
-        print("Inizio simulazione...")
-        p_bar = tqdm(range(frames),leave=True)
-        ani = animation.FuncAnimation(figure, func = update, frames = frames)
-        
-        if format == "gif":
-            ani.save(filename="../Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=10)
-        elif format == "mp4":
-            Writer = animation.writers['ffmpeg']
-            writer = Writer(fps=20, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="../Images/"+filename+".mp4", writer=writer)
 
 
     """
@@ -177,20 +106,23 @@ class LatticeGasSim:
     scale : parametro per regolare le dimensioni dei vettori
     """
     def animation2(self,frames,dpf=30,dpi=200,filename="Sim",format="gif",ave_size=10,scale=5):
+        
+        # Funzione che genere il nuovo frame dell'animazione
+        def update(frame):              
             
-        def update(frame):
-            
-            a = gl.vel_lattice(dx,dy,self.lattice)           
-
+            # Calcolo delle velocità
+            a = gl.vel_lattice(dx,dy,self.lattice)   
             vx = -a[0:dy,:]/(ave_size)
-            
             vy = -a[dy:,:]/(ave_size)
 
+            # Aggiornamento dei vettori velocità
             Q.set_UVC(vx,vy)
 
+            # Avanzamento della simulazione
             self.simulation(dpf)           
 
-            self.vxTotal.append(gl.vxtotal)
+            # Cambio del titolo
+            axs.set_title("time step "+str(frame*dpf))
 
             p_bar.update()
             if frame==frames-1:
@@ -199,10 +131,9 @@ class LatticeGasSim:
         
         # Generazione del plot
         figure, axs = plt.subplots()
-        axs.set_aspect('equal')
-        #figure.set_size_inches(12, 12)        
+        axs.set_aspect('equal')        
 
-        #--Inizializzazione dell'animazione--
+        # Inizializzazione dell'animazione
         print("Inizializzazione...")  
         dx = int(self.Lx/ave_size)
         dy = int(self.Ly/ave_size)
@@ -211,6 +142,8 @@ class LatticeGasSim:
         vx = a[0:dy,:]/(ave_size)
         vy = a[dy:,:]/(ave_size)
         Q = axs.quiver(X, Y, vx, vy,angles='xy',scale=scale, width=0.0008)    
+        axs.set_xlabel("x")
+        axs.set_ylabel("y")
         
         # Plot dell'ostacolo
         if self.obs_type == "barrier":
@@ -233,17 +166,25 @@ class LatticeGasSim:
 
         # Salvataggio
         if format == "gif":
-            ani.save(filename="Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
+            ani.save(filename="Examples/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
         elif format == "mp4":
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="Images/"+filename+".mp4", writer=writer)
+            ani.save(filename="Examples/"+filename+".mp4", writer=writer)
 
 
 
 class LatticeGasSimPcb:
 
-    def __init__(self,Lx,b,seed=12345678):
+    """
+    Inizializza tutte le variabili globali utilizzate, genera le regole di collisione, inizializza il reticolo con
+    la densità desiderata e con l'ostacolo desiderato.
+
+    L : Dimensione del reticolo L*L
+    b : Dimensioni del quadrato di particelle iniziale
+    seed : seed per la generazione di numeri casuali
+    """
+    def __init__(self,L,b,seed=12345678):
         # Abbreviazioni per le direzioni
         self.RI = 1      
         self.RD = 2
@@ -257,8 +198,8 @@ class LatticeGasSimPcb:
         # Parametri iniziali
         self.b = b
         self.N = b*b*6
-        self.Lx = Lx
-        self.Ly = Lx
+        self.Lx = L
+        self.Ly = L
         self.flowRate = 1
         self.scale = 4
         self.format = format
@@ -274,67 +215,78 @@ class LatticeGasSimPcb:
         
         # Creazione delle particelle iniziali
         x,y = self.rng.integers(2,self.Lx-2,self.N),self.rng.integers(2,self.Ly-2,self.N)
-        Lhalf = int((Lx-1)/2)
+        Lhalf = int((L-1)/2)
         self.lattice[int(Lhalf-b/2):int(Lhalf+b/2),int(Lhalf-b/2):int(Lhalf+b/2)] = 127
 
-        self.vxTotal = []
-        self.vyTotal = []
 
-
-    def lattice_ini(self):
-        self.fig, self.ax = plt.subplots()
-        hex_centers, _ = create_hex_grid(nx=self.Lx,ny=self.Ly,do_plot=False,align_to_origin=False)
-        self.x_hex_coords = hex_centers[:, 0]
-        self.y_hex_coords = hex_centers[:, 1]
-        c = self.draw_colors()
-        plot_single_lattice_custom_colors(self.x_hex_coords, self.y_hex_coords,face_color=c,edge_color=[1,1,1],min_diam=1,plotting_gap=0,rotate_deg=0,h_ax=self.ax)
-        plt.show()       
-
-    
+    """
+    Tramite la funzione count_lattice() genera un array per colorare il reticolo, barr è il colore della barriera 
+    e parr quello delle particelle, entrambi in formato RGB.
+    """
     def draw_colors(self):
         barr = np.array([1.,0.,0.])
         parr = np.array([0.,0.,1.])
         return gl.count_lattice(barr,parr,self.lattice)
 
 
+    """
+    Funzione chiamata per progredire con la simulazione.
+
+    n : indica il numero di step che si desidera simulare
+    """
     def simulation(self,n):
         for i in range(n):
             self.lattice = gl.update_lattice_pcb(self.lattice).astype(dtype=np.uint8,order='F')
-            self.vxTotal.append(gl.vxtotal)
-            self.vyTotal.append(gl.vytotal)
 
 
+    """
+    Funzione che genera un'animazione della simulazione. Questa visualizza le velocità tramite vettori
+    calcolati tramite coarse grained average.
+
+    frames : il numero di frame da disegnare
+    dpf : il numero di step della simulazione per ogni frame
+    dpi : dpi dell'immagine se si sceglie il formato gif
+    filename : nome del file di output dell'animazione
+    formato : formato del file di output (gif o mp4)
+    """
     def animation1(self,frames,dpf=30,dpi=80,filename="Sim",format="gif",fps=10):
-        
+
+        # Funzione che genera i frame dell'animazione
         def update(frame): 
+            
+            # Calcolo dei colori
             colors = self.draw_colors() 
+
+            # Avanzamento della simualzione
             self.simulation(dpf)
+
+            # Aggiornamento del titolo
             axs.set_title("time step "+str(frame*dpf))
 
             p_bar.update()
             if frame==frames-1:
                 tqdm.close(p_bar)
-                print("Salvataggio...")                
+                print("Salvataggio...")  
+
+            # Aggiornamento dei colori del reticolo                  
             return collection.set_facecolors(colors)
 
         # Parameters
         x_dim = self.Lx
         y_dim = self.Ly
         diam = 1
-
         
         # Generazione dell'animazione
         figure, axs = plt.subplots()
-        #figure.set_size_inches(12, 12)
+        axs.set_xlabel("x")
+        axs.set_ylabel("y")
         
         # Generazione degli esagoni
-        print("Creazione lattice...")        
-        centers, _ = create_hex_grid(nx = x_dim, ny = y_dim, min_diam = diam,align_to_origin=False)
-        
+        print("Inizializzazione...")        
+        centers, _ = create_hex_grid(nx = x_dim, ny = y_dim, min_diam = diam,align_to_origin=False)        
         polygons = [mpatches.RegularPolygon((x, y), numVertices = 6, radius = diam / np.sqrt(3)) for x, y in zip(centers[:, 0], centers[:, 1])]
         collection = PatchCollection(polygons)
         axs.add_collection(collection)
-
         axs.set_aspect('equal')
         axs.axis([
             centers[:, 0].min() - 2 * diam,
@@ -348,61 +300,10 @@ class LatticeGasSimPcb:
         p_bar = tqdm(range(frames),leave=True)
         ani = animation.FuncAnimation(figure, func = update, frames = frames)
         
+        # Salvataggio
         if format == "gif":
-            ani.save(filename="../Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=fps)
+            ani.save(filename="Examples/"+filename+".gif", writer="pillow",dpi=dpi,fps=fps)
         elif format == "mp4":
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=20, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="../Images/"+filename+".mp4", writer=writer)
-
-
-    def animation2(self,frames,dpf=30,dpi=200,filename="Sim",format="gif",ave_size=10,scale=5):
-            
-        def update(frame):
-            
-            a = gl.vel_lattice(dx,dy,self.lattice)           
-
-            vx = a[0:dy,:]/(ave_size)
-            
-            vy = a[dy:,:]/(ave_size)
-
-            Q.set_UVC(vx,vy)
-
-            self.simulation(dpf)           
-
-            self.vxTotal.append(gl.vxtotal)
-
-            p_bar.update()
-            if frame==frames-1:
-                tqdm.close(p_bar)
-                print("Salvataggio...")
-        
-        # Generazione del plot
-        figure, axs = plt.subplots()
-        axs.set_aspect('equal')
-        #figure.set_size_inches(12, 12)        
-
-        #--Inizializzazione dell'animazione--
-        print("Inizializzazione...")  
-        dx = int(self.Lx/ave_size)
-        dy = int(self.Ly/ave_size)
-        X, Y = np.meshgrid(np.linspace(0,self.Lx,dx), np.linspace(0,self.Ly,dy))
-        a = gl.vel_lattice(dx,dy,self.lattice)   
-        vx = a[0:dy,:]/(ave_size)
-        vy = a[dy:,:]/(ave_size)
-        Q = axs.quiver(X, Y, vx, vy,angles='xy',scale=scale, width=0.0008)    
-     
-        
-        # Animazione
-        print("Inizio simulazione...")
-        p_bar = tqdm(range(frames),leave=True)        
-        ani = animation.FuncAnimation(figure, func = update, frames = frames)
-
-
-        # Salvataggio
-        if format == "gif":
-            ani.save(filename="../Images/"+filename+".gif", writer="pillow",dpi=dpi,fps=5)
-        elif format == "mp4":
-            Writer = animation.writers['ffmpeg']
-            writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=8000)
-            ani.save(filename="../Images/"+filename+".mp4", writer=writer)
+            ani.save(filename="Examples/"+filename+".mp4", writer=writer)

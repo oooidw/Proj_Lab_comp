@@ -128,17 +128,19 @@ module moduloGL
         newLattice = 0
 
         ! Aggiornamento delle posizioni delle particelle nel reticolo
-        do i = 0, Lx-1                                                                              
+        do i = 0, Lx-1 
+            ! indici delle colonne left, cent, rght                                                                              
             l = mod((i-1+Lx),Lx)
             c = i
             r = mod((i+1),Lx)
             
 
-            do j = 1, Ly-3, 2
-                site1 = lattice(j,i)
+            do j = 1, Ly-3, 2      
+                ! Siti da aggiorare         
+                site1 = lattice(j,i)            
                 site2 = lattice(j+1,i)
 
-
+                ! Aggiornamento delle posizioni delle particelle in site1 e site2
                 newLattice(j-1,r) = ior(newLattice(j-1,r),iand(site1,RD))    
                 newLattice(j-1,c) = ior(newLattice(j-1,c),iand(site1,LD))                
                 newLattice(j,r) = ior(newLattice(j,r),iand(site1,RI))                 
@@ -154,7 +156,7 @@ module moduloGL
 
         end do   
 
-        ! Calcolo delle collisioni 
+        ! Calcolo delle collisioni e della velocità lungo x
         vxTotal = 0
         vyTotal = 0
         do i = 0, Lx-1
@@ -162,7 +164,7 @@ module moduloGL
                 site1 = rule(newLattice(j,i))
                 newlattice(j,i) = site1
                 vxTotal = vxTotal + vx(site1)
-                vyTotal = vyTotal + vy(site1)
+                !vyTotal = vyTotal + vy(site1)
             end do
         end do
 
@@ -170,6 +172,7 @@ module moduloGL
         ! Questo loop permette di ottenere il flusso di particelle 
         inj = int((flowRate*numParticles-vxTotal)/scale)            ! Numero di iniezioni per ottenere il flusso desiderato
         do k = 1, abs(inj) 
+            ! Indici casuali per modificare un sito
             call random_number(tmp)
             i = int(Lx*tmp)
             call random_number(tmp)
@@ -202,7 +205,7 @@ module moduloGL
         ! Loop sul reticolo per il calcolo del numero di particelle
         do i = 0, Lx-1
             do j = 0, Ly-1
-                bit = bit_count(lattice(j,i))
+                bit = bit_count(lattice(j,i)) 
                 if ( bit/=-1 ) then
                     newLattice(j*Lx+i,:) = cP*(1-exp(-bit/3))
                 else
@@ -242,13 +245,15 @@ module moduloGL
 
     ! Funzione che calcola la coarse grained average velocity
     function vel_lattice(dx,dy,lattice,Lx,Ly) result(result)        
-        integer :: Lx,Ly,dx,dy
+        integer :: Lx,Ly,dx,dy !dx,dy numero di punti in cui fare la media delle velocità
         integer, dimension(0:Ly-1,0:Lx-1) :: lattice
         real, dimension(0:dy*2-1,0:dx-1) :: result
         integer :: i,j,k1,k2
         
-        k1 = Lx/dx
+        !dimensioni quadrato in cui si calcola la media
+        k1 = Lx/dx  
         k2 = Ly/dy
+
         result = 0
         
         ! Loop sul reticolo in cui calcolo la somma delle velocità vx e vy su un quadrato k1*k2 
