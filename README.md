@@ -39,7 +39,7 @@ lgs = LatticeGasSim(
       Lx                              # Dimensione x del reticolo
       Lx                              # Dimensione y del reticolo
       rho        = 0.2,               # Densità di particelle
-      flowrate   = 0.2,               # Valore desiderato del flusso di particelle
+      flowrate   = -0.2,              # Valore desiderato del flusso di particelle (<0 verso destra, >0 verso sinistra)
       scale      = 4,                 # Parametro che influenza il numero di inezioni per ottenere un certo flowrate
       seed       = 12345678,          # seed per la generazione di numeri casuali
       obs_type   = "barrier"          # tipo di ostacolo desiderato (barriera, quadrato o rombo)
