@@ -19,7 +19,7 @@ lgs.animation2(frames=50,dpf=30,ave_size=20,scale=500,filename="gasLattice_barr"
 ```
 che genera la seguente animazione:
 <p align="center">
-  <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Images/gasLattice_barr.gif">
+  <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Examples/gasLattice_barr.gif">
 </p>
 
 Nel sencondo caso utilizziamo invece LatticeGasSimPcb e animation1 in tal modo:
@@ -29,7 +29,7 @@ lgs.animation1(frames=100,dpf=1,fps=4,filename="gasLatticePCB1.1")
 ```
 per ottenere:
 <p align="center">
-  <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Images/gasLatticePCB1.1.gif">
+  <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Examples/gasLatticePCB1.1.gif">
 </p>
 
 ## Parametri aggiuntivi
@@ -39,7 +39,7 @@ lgs = LatticeGasSim(
       Lx                              # Dimensione x del reticolo
       Lx                              # Dimensione y del reticolo
       rho        = 0.2,               # Densità di particelle
-      flowrate   = 0.2,               # Valore desiderato del flusso di particelle
+      flowrate   = -0.2,              # Valore desiderato del flusso di particelle (<0 verso destra, >0 verso sinistra)
       scale      = 4,                 # Parametro che influenza il numero di inezioni per ottenere un certo flowrate
       seed       = 12345678,          # seed per la generazione di numeri casuali
       obs_type   = "barrier"          # tipo di ostacolo desiderato (barriera, quadrato o rombo)
