@@ -29,7 +29,7 @@ lgs.animation1(frames=100,dpf=1,fps=4,filename="gasLatticePCB1.1")
 ```
 per ottenere:
 <p align="center">
-  <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Examples/gasLatticePCB1.1.gif">
+  <img width="600" src="https://github.com/oooidw/Proj_Lab_comp/blob/main/Examples/gasLatticePCB1.2.gif">
 </p>
 
 ## Parametri aggiuntivi
