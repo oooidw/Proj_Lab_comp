@@ -78,8 +78,8 @@ class LatticeGasSim:
                     self.lattice[ii:2*(self.propy2-i)+ii,i] = self.B
                     ii += 1 
         elif self.obs_type == "cube": # Terzo tipo di ostacolo
-            self.propx1, self.propx2 =  int(self.Ly*.1),int(self.Ly*.9)               # | dimensioni della barriera in proporzione alla dimensione del lattice
-            self.propy1, self.propy2 =  int(self.Lx*0.3),int(self.Lx*0.4)             # |
+            self.propx1, self.propx2 =  int(self.Ly*.3),int(self.Ly*.6)               # | dimensioni della barriera in proporzione alla dimensione del lattice
+            self.propy1, self.propy2 =  int(self.Lx*0.3),int(self.Lx*0.8)             # |
             self.lattice[self.propx1:self.propx2,self.propy1:self.propy2] = self.B
 
 
@@ -219,6 +219,12 @@ class LatticeGasSimPcb:
         self.lattice[int(Lhalf-b/2):int(Lhalf+b/2),int(Lhalf-b/2):int(Lhalf+b/2)] = 127
 
 
+        self.avex = []
+        self.avey = []
+        self.havex = []
+        self.havey = []
+        
+
     """
     Tramite la funzione count_lattice() genera un array per colorare il reticolo, barr è il colore della barriera 
     e parr quello delle particelle, entrambi in formato RGB.
@@ -239,6 +245,22 @@ class LatticeGasSimPcb:
             self.lattice = gl.update_lattice_pcb(self.lattice).astype(dtype=np.uint8,order='F')
 
 
+    def test(self):
+        avx = 0
+        avy = 0
+        hvex = []
+        hvey = []
+        for i in range(self.Lx):
+            for j in range(self.Lx):
+                if self.lattice[i,j] != 0:
+                    avx += i
+                    avy += j
+                    hvex.append(i)
+                    hvey.append(j)
+        self.havex.append(hvex)
+        self.havey.append(hvey)
+        self.avex.append(avx/self.N)
+        self.avey.append(avy/self.N)
     """
     Funzione che genera un'animazione della simulazione. Questa visualizza le velocità tramite vettori
     calcolati tramite coarse grained average.
@@ -256,6 +278,8 @@ class LatticeGasSimPcb:
             
             # Calcolo dei colori
             colors = self.draw_colors() 
+
+            self.test()
 
             # Avanzamento della simualzione
             self.simulation(dpf)
