@@ -9,19 +9,21 @@ import matplotlib.patches as patches
 
 class LatticeGasSim:
     
-    """
-    Inizializza tutte le variabili globali utilizzate, genera le regole di collisione, inizializza il reticolo con
-    la densità desiderata e con l'ostacolo desiderato.
-
-    Lx : Dimensione x del reticolo
-    Lx : Dimensione y del reticolo
-    rho : Densità di particelle
-    flowrate : Valore desiderato del flusso di particelle
-    scale : Parametro che influenza il numero di inezioni per ottenere un certo flowrate
-    seed : seed per la generazione di numeri casuali
-    obs_type : tipo di ostacolo desiderato
-    """
     def __init__(self,Lx,Ly,rho=0.2,flowRate=0.2,scale=4,seed=12345678,obs_type="barrier"):
+        """
+        Inizializza tutte le variabili globali utilizzate, genera le regole di collisione, inizializza il reticolo con
+        la densità desiderata e con l'ostacolo desiderato.
+
+        Args:
+        Lx - Dimensione x del reticolo
+        Lx - Dimensione y del reticolo
+        rho - Densità di particelle
+        flowrate - Valore desiderato del flusso di particelle
+        scale - Parametro che influenza il numero di inezioni per ottenere un certo flowrate
+        seed - seed per la generazione di numeri casuali
+        obs_type - tipo di ostacolo desiderato
+        """
+
         # Abbreviazioni per le direzioni
         self.RI = 1      
         self.RD = 2
@@ -83,30 +85,33 @@ class LatticeGasSim:
             self.lattice[self.propx1:self.propx2,self.propy1:self.propy2] = self.B
 
 
-    """
-    Funzione chiamata per progredire con la simulazione.
-
-    n : indica il numero di step che si desidera simulare
-    """
     def simulation(self,n):
+        """
+        Funzione chiamata per progredire con la simulazione.
+
+        Args:
+        n - indica il numero di step che si desidera simulare
+        """
+
         for i in range(n):
             self.lattice = gl.update_lattice(self.lattice).astype(dtype=np.uint8,order='F')
 
-
-    """
-    Funzione che genera un'animazione della simulazione. Questa visualizza le velocità tramite vettori
-    calcolati tramite coarse grained average.
-
-    frames : il numero di frame da disegnare
-    dpf : il numero di step della simulazione per ogni frame
-    dpi : dpi dell'immagine se si sceglie il formato gif
-    filename : nome del file di output dell'animazione
-    formato : formato del file di output (gif o mp4)
-    ave_size : dimensioni del quadrato per coarse grained average
-    scale : parametro per regolare le dimensioni dei vettori
-    """
+  
     def animation2(self,frames,dpf=30,dpi=200,filename="Sim",format="gif",ave_size=10,scale=5):
-        
+        """
+        Funzione che genera un'animazione della simulazione. Questa visualizza le velocità tramite vettori
+        calcolati tramite coarse grained average.
+
+        Args:
+        frames - il numero di frame da disegnare
+        dpf - il numero di step della simulazione per ogni frame
+        dpi - dpi dell'immagine se si sceglie il formato gif
+        filename - nome del file di output dell'animazione
+        formato - formato del file di output (gif o mp4)
+        ave_size - dimensioni del quadrato per coarse grained average
+        scale - parametro per regolare le dimensioni dei vettori
+        """
+
         # Funzione che genere il nuovo frame dell'animazione
         def update(frame):              
             
@@ -176,15 +181,17 @@ class LatticeGasSim:
 
 class LatticeGasSimPcb:
 
-    """
-    Inizializza tutte le variabili globali utilizzate, genera le regole di collisione, inizializza il reticolo con
-    la densità desiderata e con l'ostacolo desiderato.
-
-    L : Dimensione del reticolo L*L
-    b : Dimensioni del quadrato di particelle iniziale
-    seed : seed per la generazione di numeri casuali
-    """
     def __init__(self,L,b,seed=12345678):
+        """
+        Inizializza tutte le variabili globali utilizzate, genera le regole di collisione, inizializza il reticolo con
+        la densità desiderata e con l'ostacolo desiderato.
+
+        Args:
+        L - Dimensione del reticolo L*L
+        b - Dimensioni del quadrato di particelle iniziale
+        seed - seed per la generazione di numeri casuali
+        """
+    
         # Abbreviazioni per le direzioni
         self.RI = 1      
         self.RD = 2
@@ -225,22 +232,27 @@ class LatticeGasSimPcb:
         self.havey = []
         
 
-    """
-    Tramite la funzione count_lattice() genera un array per colorare il reticolo, barr è il colore della barriera 
-    e parr quello delle particelle, entrambi in formato RGB.
-    """
+    
     def draw_colors(self):
+        """
+        Tramite la funzione count_lattice() genera un array per colorare il reticolo, barr è il colore della barriera 
+        e parr quello delle particelle, entrambi in formato RGB.
+        """
+
         barr = np.array([1.,0.,0.])
         parr = np.array([0.,0.,1.])
         return gl.count_lattice(barr,parr,self.lattice)
 
 
-    """
-    Funzione chiamata per progredire con la simulazione.
-
-    n : indica il numero di step che si desidera simulare
-    """
+    
     def simulation(self,n):
+        """
+        Funzione chiamata per progredire con la simulazione.
+
+        Args:
+        n - indica il numero di step che si desidera simulare
+        """
+
         for i in range(n):
             self.lattice = gl.update_lattice_pcb(self.lattice).astype(dtype=np.uint8,order='F')
 
@@ -261,17 +273,21 @@ class LatticeGasSimPcb:
         self.havey.append(hvey)
         self.avex.append(avx/self.N)
         self.avey.append(avy/self.N)
-    """
-    Funzione che genera un'animazione della simulazione. Questa visualizza le velocità tramite vettori
-    calcolati tramite coarse grained average.
 
-    frames : il numero di frame da disegnare
-    dpf : il numero di step della simulazione per ogni frame
-    dpi : dpi dell'immagine se si sceglie il formato gif
-    filename : nome del file di output dell'animazione
-    formato : formato del file di output (gif o mp4)
-    """
+
+    
     def animation1(self,frames,dpf=30,dpi=80,filename="Sim",format="gif",fps=10):
+        """
+        Funzione che genera un'animazione della simulazione. Questa visualizza le velocità tramite vettori
+        calcolati tramite coarse grained average.
+        
+        Args:
+        frames - il numero di frame da disegnare
+        dpf - il numero di step della simulazione per ogni frame
+        dpi - dpi dell'immagine se si sceglie il formato gif
+        filename - nome del file di output dell'animazione
+        formato - formato del file di output (gif o mp4)
+        """
 
         # Funzione che genera i frame dell'animazione
         def update(frame): 
